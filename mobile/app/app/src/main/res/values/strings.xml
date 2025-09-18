@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IntelliAttend</string>
+    <string name="app_description">Smart Attendance System</string>
+    
+    <!-- Login -->
+    <string name="login_title">Welcome Back</string>
+    <string name="login_subtitle">Sign in to mark your attendance</string>
+    <string name="email_hint">Student Email</string>
+    <string name="password_hint">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="forgot_password">Forgot Password?</string>
+    
+    <!-- Permissions -->
+    <string name="permissions_title">App Permissions Required</string>
+    <string name="permissions_subtitle">IntelliAttend needs these permissions to verify your attendance securely</string>
+    <string name="grant_permissions">Grant Permissions</string>
+    <string name="skip_for_now">Skip for Now</string>
+    
+    <!-- Camera -->
+    <string name="camera_permission_title">Camera Access</string>
+    <string name="camera_permission_description">Required to scan QR codes from classroom displays</string>
+    
+    <!-- Location -->
+    <string name="location_permission_title">Location Services</string>
+    <string name="location_permission_description">Verifies you are physically present in the classroom</string>
+    
+    <!-- Biometric -->
+    <string name="biometric_permission_title">Biometric Authentication</string>
+    <string name="biometric_permission_description">Confirms your identity using fingerprint or face unlock</string>
+    
+    <!-- Bluetooth -->
+    <string name="bluetooth_permission_title">Bluetooth Scanning</string>
+    <string name="bluetooth_permission_description">Detects proximity to classroom equipment</string>
+    
+    <!-- Home -->
+    <string name="home_title">IntelliAttend</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="scan_qr_attendance">Scan QR Code for Attendance</string>
+    <string name="recent_attendance">Recent Attendance</string>
+    <string name="no_attendance_records">No attendance records yet</string>
+    <string name="start_marking_attendance">Start marking attendance by scanning QR codes</string>
+    <string name="active_sessions">Active Sessions</string>
+    
+    <!-- Scanner -->
+    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="position_qr_frame">Position QR code within this frame</string>
+    <string name="point_camera_qr">Point camera at QR code on classroom board</string>
+    <string name="validating_qr">Validating QR code…</string>
+    <string name="collecting_data">Collecting environmental data…</string>
+    <string name="biometric_auth_required">Biometric Authentication Required</string>
+    <string name="waiting_biometric">Waiting for biometric authentication…</string>
+    <string name="submitting_attendance">Submitting attendance…</string>
+    <string name="authenticate">Authenticate</string>
+    <string name="try_again">Try Again</string>
+    
+    <!-- Status Messages -->
+    <string name="attendance_marked_success">Attendance marked successfully!</string>
+    <string name="qr_code_invalid">Invalid QR code</string>
+    <string name="session_expired">Session has expired</string>
+    <string name="already_marked">Attendance already marked</string>
+    <string name="verification_failed">Verification failed</string>
+    <string name="network_error">Network error</string>
+    <string name="unknown_error">Unknown error occurred</string>
+    
+    <!-- Common -->
+    <string name="continue_text">Continue</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="retry">Retry</string>
+    <string name="logout">Logout</string>
+    <string name="back">Back</string>
+    <string name="loading">Loading…</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    
+    <!-- Verification -->
+    <string name="verification_score">Verification Score</string>
+    <string name="biometric_verified">Biometric Verified</string>
+    <string name="location_verified">Location Verified</string>
+    <string name="bluetooth_verified">Bluetooth Verified</string>
+    <string name="wifi_verified">WiFi Verified</string>
+    
+    <!-- Status -->
+    <string name="present">PRESENT</string>
+    <string name="late">LATE</string>
+    <string name="absent">ABSENT</string>
+    <string name="invalid">INVALID</string>
+    
+    <!-- Help -->
+    <string name="help_text">Having trouble? Contact your institution\'s IT support.</string>
+    
+    <!-- Errors -->
+    <string name="email_required">Email is required</string>
+    <string name="password_required">Password is required</string>
+    <string name="invalid_email">Invalid email format</string>
+    <string name="password_min_length">Password must be at least 6 characters</string>
+    <string name="login_failed">Login failed. Please try again.</string>
+    <string name="network_error_message">Network error. Please check your connection.</string>
+    <string name="session_expired_message">Your session has expired. Please login again.</string>
+    
+    <!-- Biometric -->
+    <string name="biometric_title">Biometric Authentication</string>
+    <string name="biometric_subtitle">Use your fingerprint or face to authenticate</string>
+    <string name="biometric_description">Verify your identity to mark attendance</string>
+    <string name="biometric_not_available">Biometric authentication is not available on this device</string>
+    <string name="biometric_not_enrolled">No biometric credentials enrolled. Please set up fingerprint or face unlock in device settings</string>
+    <string name="biometric_error">Authentication error</string>
+    <string name="biometric_failed">Authentication failed. Please try again.</string>
+    <string name="biometric_cancelled">Authentication cancelled</string>
+</resources>

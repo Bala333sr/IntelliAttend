@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme for Android 12+ -->
+    <style name="Base.Theme.IntelliAttend" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary colors -->
+        <item name="colorPrimary">@color/intelliBlue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/intelliBlueLight</item>
+        <item name="colorOnPrimaryContainer">@color/intelliBlueVariant</item>
+        
+        <!-- Secondary colors -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">#CCC2DC</item>
+        <item name="colorOnSecondaryContainer">#1D192B</item>
+        
+        <!-- Tertiary colors -->
+        <item name="colorTertiary">#7D5260</item>
+        <item name="colorOnTertiary">@color/white</item>
+        <item name="colorTertiaryContainer">#EFB8C8</item>
+        <item name="colorOnTertiaryContainer">#31111D</item>
+        
+        <!-- Error colors -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+        <item name="colorErrorContainer">#FFCDD2</item>
+        <item name="colorOnErrorContainer">#B71C1C</item>
+        
+        <!-- Surface colors -->
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/gray_light</item>
+        <item name="colorOnSurfaceVariant">@color/gray_medium</item>
+        
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/intelliBlue</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

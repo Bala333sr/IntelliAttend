@@ -1,0 +1,897 @@
+//================================================================================
+//                              5. DATABASE DESIGN
+//================================================================================
+
+DATABASE: intelliattend_db (MySQL)
+TABLES: 12 Core Tables with Referential Integrity
+
+DATABASE SCHEMA OVERVIEW:
+
+The IntelliAttend database is designed with a comprehensive relational structure to support all attendance management features. The schema includes tables for user management, class organization, session tracking, attendance recording, and system administration.
+
+ARCHITECTURE:
+├── Relational database design with MySQL 8.0+
+├── InnoDB storage engine for ACID compliance
+├── UTF8MB4 character set for full Unicode support
+├── Referential integrity through foreign key constraints
+└── Comprehensive indexing strategy for performance optimization
+
+TECHNICAL SPECIFICATIONS:
+├── Database Driver: PyMySQL 1.1.0
+├── ORM Layer: SQLAlchemy 2.0.43
+├── Connection Pooling: Built-in SQLAlchemy pooling
+├── Character Set: utf8mb4 with utf8mb4_unicode_ci collation
+└── Storage Engine: InnoDB for transaction support
+
+DATABASE CONNECTION:
+├── Host: localhost (configurable)
+├── Port: 3306 (configurable)
+├── User: root (configurable)
+├── Password: '' (configurable)
+├── Database: intelliattend_db (configurable)
+└── URI Format: mysql+pymysql://user:password@host:port/database
+
+KEY TABLES WITH DETAILED STRUCTURE:
+
+1. FACULTY
+   ├── faculty_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── faculty_code (VARCHAR(20), UNIQUE, NOT NULL) - Faculty identification code
+   ├── first_name, last_name (VARCHAR(50), NOT NULL) - Faculty name
+   ├── email (VARCHAR(100), UNIQUE, NOT NULL) - Login credential
+   ├── phone_number (VARCHAR(15), UNIQUE, NOT NULL) - Contact information
+   ├── department (VARCHAR(100), NOT NULL) - Academic department
+   ├── password_hash (VARCHAR(255), NOT NULL) - PBKDF2/Bcrypt encrypted password
+   ├── is_active (BOOLEAN, DEFAULT TRUE) - Account status
+   ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+   └── INDEXES: faculty_code, email, phone_number
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── faculty_code: Must be unique across all faculty members, alphanumeric with possible special characters
+├── email: Must follow standard email format and be unique
+├── phone_number: Must follow international format with country code, unique constraint
+├── department: Free text field for department name
+├── password_hash: Bcrypt hash with 12 rounds of encryption
+└── is_active: Boolean flag to soft-delete accounts without losing data
+
+2. STUDENTS
+   ├── student_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── student_code (VARCHAR(20), UNIQUE, NOT NULL) - Student identification code
+   ├── first_name, last_name (VARCHAR(50), NOT NULL) - Student name
+   ├── email (VARCHAR(100), UNIQUE, NOT NULL) - Login credential
+   ├── phone_number (VARCHAR(15)) - Contact information
+   ├── year_of_study (INT, CHECK 1-4) - Academic year level
+   ├── program (VARCHAR(100), NOT NULL) - Academic program
+   ├── password_hash (VARCHAR(255), NOT NULL) - PBKDF2/Bcrypt encrypted password
+   ├── is_active (BOOLEAN, DEFAULT TRUE) - Account status
+   ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+   └── INDEXES: student_code, email, program
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── student_code: Unique identifier for each student
+├── year_of_study: Integer constraint between 1-4 for valid academic years
+├── program: Academic program name (e.g., Computer Science, Information Technology)
+├── email: Must follow standard email format and be unique
+└── phone_number: Optional field for student contact information
+
+3. CLASSROOMS
+   ├── classroom_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── room_number (VARCHAR(20), UNIQUE, NOT NULL) - Room identification
+   ├── building_name (VARCHAR(100), NOT NULL) - Building location
+   ├── floor_number (INT) - Floor level
+   ├── capacity (INT, DEFAULT 50) - Maximum student capacity
+   ├── latitude, longitude (DECIMAL(10,8)/(11,8)) - GPS coordinates for geofencing
+   ├── geofence_radius (DECIMAL(8,2), DEFAULT 50.00) - Geofencing boundary in meters
+   ├── bluetooth_beacon_id (VARCHAR(100)) - Bluetooth beacon identifier
+   ├── is_active (BOOLEAN, DEFAULT TRUE) - Room availability
+   ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+   └── INDEXES: room_number, building_name, coordinates
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── room_number: Unique identifier for each classroom
+├── building_name: Name of the building where the classroom is located
+├── floor_number: Integer representing the floor level
+├── capacity: Maximum number of students the room can accommodate
+├── latitude/longitude: Precise GPS coordinates with 8 decimal places for accuracy
+├── geofence_radius: Distance in meters for attendance validation geofence
+└── bluetooth_beacon_id: Identifier for Bluetooth beacons used in proximity verification
+
+4. CLASSES
+   ├── class_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── class_code (VARCHAR(20), UNIQUE, NOT NULL) - Class identification code
+   ├── class_name (VARCHAR(100), NOT NULL) - Class name/title
+   ├── faculty_id (INT, FK → faculty.faculty_id, NOT NULL) - Teaching faculty
+   ├── classroom_id (INT, FK → classrooms.classroom_id) - Assigned classroom
+   ├── semester (VARCHAR(20), NOT NULL) - Academic semester
+   ├── academic_year (VARCHAR(9), NOT NULL) - Academic year (e.g., 2024-2025)
+   ├── credits (INT, DEFAULT 3) - Credit hours
+   ├── max_students (INT, DEFAULT 60) - Maximum enrollment
+   ├── schedule_day (ENUM: Monday-Sunday) - Scheduled day of week
+   ├── start_time, end_time (TIME) - Class timing
+   ├── is_active (BOOLEAN, DEFAULT TRUE) - Class status
+   ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+   └── INDEXES: class_code, faculty_id, classroom_id, schedule, semester_year
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── class_code: Unique identifier for each class
+├── faculty_id: References faculty table, required field
+├── classroom_id: References classrooms table, optional (NULL allowed for online classes)
+├── semester: Academic semester (e.g., Fall, Spring, Summer)
+├── academic_year: Format "YYYY-YYYY" (e.g., 2024-2025)
+├── schedule_day: Enumerated value for day of week
+└── start_time/end_time: TIME format for class schedule
+
+5. STUDENT_CLASS_ENROLLMENTS
+   ├── enrollment_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── student_id (INT, FK → students.student_id, NOT NULL) - Enrolled student
+   ├── class_id (INT, FK → classes.class_id, NOT NULL) - Enrolled class
+   ├── enrollment_date (DATE, DEFAULT CURRENT_DATE) - Enrollment timestamp
+   ├── status (ENUM: enrolled/dropped/completed, DEFAULT enrolled) - Enrollment status
+   ├── final_grade (VARCHAR(5)) - Final grade achieved
+   ├── is_active (BOOLEAN, DEFAULT TRUE) - Active enrollment
+   ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+   └── INDEXES: student_id, class_id, status, UNIQUE(student_id, class_id)
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── student_id: References students table
+├── class_id: References classes table
+├── status: Enumerated value tracking enrollment lifecycle
+├── final_grade: Letter grade (A+, A, A-, etc.) or numeric grade
+└── UNIQUE constraint: Prevents duplicate enrollments for the same student-class combination
+
+6. ATTENDANCE_SESSIONS
+   ├── session_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── class_id (INT, FK → classes.class_id, NOT NULL) - Associated class
+   ├── faculty_id (INT, FK → faculty.faculty_id, NOT NULL) - Initiating faculty
+   ├── session_date (DATE, DEFAULT CURRENT_DATE) - Session date
+   ├── start_time (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP) - Session start
+   ├── end_time (TIMESTAMP) - Session end
+   ├── qr_token (VARCHAR(255), UNIQUE) - QR code token for validation
+   ├── qr_secret_key (VARCHAR(255)) - Secret key for QR validation
+   ├── qr_expires_at (TIMESTAMP) - QR code expiry timestamp
+   ├── otp_used (VARCHAR(10)) - Initiating OTP code
+   ├── status (ENUM: active/completed/cancelled, DEFAULT active) - Session status
+   ├── total_students_enrolled (INT, DEFAULT 0) - Total enrolled students
+   ├── total_students_present (INT, DEFAULT 0) - Students marked present
+   ├── attendance_percentage (DECIMAL(5,2), DEFAULT 0.00) - Overall attendance %
+   ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+   └── INDEXES: class_id, faculty_id, session_date, qr_token, status
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── qr_token: Unique token for QR code validation
+├── qr_secret_key: Secret key used in QR code generation for security
+├── qr_expires_at: Timestamp when QR code becomes invalid
+├── otp_used: 6-digit OTP code used to initiate the session
+├── status: Enumerated value tracking session lifecycle
+└── attendance_percentage: Calculated value representing overall class attendance
+
+7. ATTENDANCE_RECORDS
+   ├── record_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── session_id (INT, FK → attendance_sessions.session_id, NOT NULL) - Session reference
+   ├── student_id (INT, FK → students.student_id, NOT NULL) - Attending student
+   ├── scan_timestamp (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP) - Scan timestamp
+   ├── biometric_verified (BOOLEAN, DEFAULT FALSE) - Biometric validation status
+   ├── location_verified (BOOLEAN, DEFAULT FALSE) - GPS location validation
+   ├── bluetooth_verified (BOOLEAN, DEFAULT FALSE) - Bluetooth proximity validation
+   ├── gps_latitude, gps_longitude (DECIMAL(10,8)/(11,8)) - Student GPS coordinates
+   ├── gps_accuracy (DECIMAL(8,2)) - GPS accuracy in meters
+   ├── bluetooth_rssi (INT) - Bluetooth signal strength
+   ├── device_info (JSON) - Student device information
+   ├── verification_score (DECIMAL(3,2), DEFAULT 0.00) - Multi-factor score (0.00-1.00)
+   ├── status (ENUM: present/late/absent/invalid, DEFAULT present) - Attendance status
+   ├── notes (TEXT) - Additional information
+   ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+   └── INDEXES: session_id, student_id, scan_timestamp, status, verification_score, UNIQUE(session_id, student_id)
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── scan_timestamp: When the student scanned the QR code
+├── biometric_verified: Boolean flag for fingerprint/face recognition validation
+├── location_verified: Boolean flag for GPS geofencing validation
+├── bluetooth_verified: Boolean flag for Bluetooth beacon proximity validation
+├── gps_accuracy: Accuracy of GPS coordinates in meters
+├── bluetooth_rssi: Received Signal Strength Indicator for proximity measurement
+├── device_info: JSON object containing device metadata
+├── verification_score: Composite score (0.00-1.00) based on all verification factors
+└── status: Enumerated value representing attendance outcome
+
+8. OTP_LOGS
+   ├── otp_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── faculty_id (INT, FK → faculty.faculty_id, NOT NULL) - Generating faculty
+   ├── otp_code (VARCHAR(10), NOT NULL) - 6-digit OTP code
+   ├── generated_at (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP) - Generation timestamp
+   ├── expires_at (TIMESTAMP, NOT NULL) - Expiry timestamp
+   ├── used_at (TIMESTAMP) - Usage timestamp
+   ├── session_id (INT, FK → attendance_sessions.session_id) - Associated session
+   ├── is_used (BOOLEAN, DEFAULT FALSE) - Usage status
+   ├── attempts (INT, DEFAULT 0) - Number of attempts
+   ├── ip_address (VARCHAR(45)) - Client IP address
+   ├── user_agent (TEXT) - Client user agent
+   ├── created_at (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP) - Creation timestamp
+   └── INDEXES: faculty_id, otp_code, expires_at, is_used
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── otp_code: 6-digit numeric code for session initiation
+├── expires_at: Timestamp when OTP becomes invalid (typically 5 minutes)
+├── is_used: Boolean flag tracking OTP usage
+├── attempts: Counter for failed validation attempts
+├── ip_address: IPv4/IPv6 address of requesting client
+└── user_agent: Browser/device information of requesting client
+
+9. STUDENT_DEVICES
+   ├── device_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+   ├── student_id (INT, FK → students.student_id, NOT NULL) - Owner student
+   ├── device_uuid (VARCHAR(255), UNIQUE, NOT NULL) - Device unique identifier
+   ├── device_name (VARCHAR(100)) - Device name
+   ├── device_type (ENUM: android/ios/web, NOT NULL) - Device platform
+   ├── device_model (VARCHAR(100)) - Device model
+   ├── os_version (VARCHAR(50)) - Operating system version
+   ├── app_version (VARCHAR(20)) - Application version
+   ├── fcm_token (VARCHAR(255)) - Firebase Cloud Messaging token
+   ├── last_seen (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP) - Last activity
+   ├── is_active (BOOLEAN, DEFAULT TRUE) - Device status
+   ├── biometric_enabled (BOOLEAN, DEFAULT FALSE) - Biometric capability
+   ├── location_permission (BOOLEAN, DEFAULT FALSE) - Location access
+   ├── bluetooth_permission (BOOLEAN, DEFAULT FALSE) - Bluetooth access
+   ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+   └── INDEXES: student_id, device_uuid, device_type, last_seen
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── device_uuid: Universally unique identifier for the device
+├── device_type: Enumerated platform type
+├── fcm_token: Token for push notifications
+├── last_seen: Timestamp of last device activity
+└── permission flags: Boolean values for device capability tracking
+
+10. ATTENDANCE_SUMMARY
+    ├── summary_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+    ├── class_id (INT, FK → classes.class_id, NOT NULL) - Associated class
+    ├── student_id (INT, FK → students.student_id, NOT NULL) - Associated student
+    ├── total_sessions (INT, DEFAULT 0) - Total class sessions
+    ├── attended_sessions (INT, DEFAULT 0) - Sessions attended
+    ├── late_sessions (INT, DEFAULT 0) - Late arrivals
+    ├── absent_sessions (INT, DEFAULT 0) - Absences
+    ├── attendance_percentage (DECIMAL(5,2), DEFAULT 0.00) - Overall percentage
+    ├── first_attendance_date (DATE) - First attendance date
+    ├── last_attendance_date (DATE) - Most recent attendance date
+    ├── semester (VARCHAR(20)) - Academic semester
+    ├── academic_year (VARCHAR(9)) - Academic year
+    ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+    └── INDEXES: class_id, student_id, attendance_percentage, semester_year, UNIQUE(class_id, student_id, semester, academic_year)
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── attendance_percentage: Calculated value (attended_sessions / total_sessions) * 100
+├── semester: Academic semester for the summary period
+├── academic_year: Academic year for the summary period
+└── UNIQUE constraint: One summary record per student-class-semester-year combination
+
+11. QR_TOKENS_LOG
+    ├── log_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+    ├── session_id (INT, FK → attendance_sessions.session_id, NOT NULL) - Associated session
+    ├── token_value (VARCHAR(255), NOT NULL) - QR token value
+    ├── generated_at (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP) - Generation timestamp
+    ├── expires_at (TIMESTAMP, NOT NULL) - Expiry timestamp
+    ├── is_used (BOOLEAN, DEFAULT FALSE) - Usage status
+    ├── scan_count (INT, DEFAULT 0) - Number of scans
+    ├── ip_address (VARCHAR(45)) - Client IP address
+    ├── created_at (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP) - Creation timestamp
+    └── INDEXES: session_id, token_value, expires_at, generated_at
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── token_value: Unique token for QR code validation
+├── expires_at: Timestamp when token becomes invalid
+├── is_used: Boolean flag tracking token usage
+├── scan_count: Counter for how many times the QR code was scanned
+└── ip_address: IP address of scanning device
+
+12. ADMINS
+    ├── admin_id (PK, INT, AUTO_INCREMENT) - Unique identifier
+    ├── username (VARCHAR(50), UNIQUE, NOT NULL) - Admin username
+    ├── email (VARCHAR(100), UNIQUE, NOT NULL) - Admin email
+    ├── password_hash (VARCHAR(255), NOT NULL) - Encrypted password
+    ├── first_name, last_name (VARCHAR(50), NOT NULL) - Admin name
+    ├── role (ENUM: super_admin/admin/operator, DEFAULT admin) - Access level
+    ├── is_active (BOOLEAN, DEFAULT TRUE) - Account status
+    ├── last_login (TIMESTAMP) - Last login timestamp
+    ├── created_at, updated_at (TIMESTAMP) - Audit timestamps
+    └── INDEXES: username, email, role, is_active
+
+FIELD CONSTRAINTS AND VALIDATIONS:
+├── username: Unique identifier for admin login
+├── role: Enumerated access level with different permissions
+│   ├── super_admin: Full system access
+│   ├── admin: Administrative functions
+│   └── operator: Limited operational functions
+├── is_active: Boolean flag for account status
+└── last_login: Timestamp of most recent successful login
+
+DATABASE RELATIONSHIPS:
+
+ONE-TO-MANY RELATIONSHIPS:
+├── FACULTY (1) → CLASSES (N)
+├── FACULTY (1) → ATTENDANCE_SESSIONS (N)
+├── FACULTY (1) → OTP_LOGS (N)
+├── STUDENTS (1) → ATTENDANCE_RECORDS (N)
+├── STUDENTS (1) → STUDENT_DEVICES (N)
+├── STUDENTS (1) → STUDENT_CLASS_ENROLLMENTS (N)
+├── STUDENTS (1) → ATTENDANCE_SUMMARY (N)
+├── CLASSROOMS (1) → CLASSES (N)
+├── CLASSES (1) → ATTENDANCE_SESSIONS (N)
+├── CLASSES (1) → STUDENT_CLASS_ENROLLMENTS (N)
+├── CLASSES (1) → ATTENDANCE_SUMMARY (N)
+├── ATTENDANCE_SESSIONS (1) → ATTENDANCE_RECORDS (N)
+├── ATTENDANCE_SESSIONS (1) → OTP_LOGS (N)
+└── ATTENDANCE_SESSIONS (1) → QR_TOKENS_LOG (N)
+
+MANY-TO-MANY RELATIONSHIPS (via junction tables):
+└── STUDENTS (N) ↔ CLASSES (N) through STUDENT_CLASS_ENROLLMENTS
+
+REFERENTIAL INTEGRITY:
+├── CASCADE DELETE: When parent records are deleted, child records are automatically removed
+│   ├── FACULTY → CLASSES: If a faculty member is deleted, their classes are removed
+│   ├── FACULTY → ATTENDANCE_SESSIONS: If a faculty member is deleted, their sessions are removed
+│   ├── FACULTY → OTP_LOGS: If a faculty member is deleted, their OTP logs are removed
+│   ├── STUDENTS → ATTENDANCE_RECORDS: If a student is deleted, their attendance records are removed
+│   ├── STUDENTS → STUDENT_DEVICES: If a student is deleted, their device records are removed
+│   ├── STUDENTS → STUDENT_CLASS_ENROLLMENTS: If a student is deleted, their enrollments are removed
+│   ├── STUDENTS → ATTENDANCE_SUMMARY: If a student is deleted, their summary records are removed
+│   ├── CLASSES → ATTENDANCE_SESSIONS: If a class is deleted, its sessions are removed
+│   ├── CLASSES → STUDENT_CLASS_ENROLLMENTS: If a class is deleted, its enrollments are removed
+│   ├── CLASSES → ATTENDANCE_SUMMARY: If a class is deleted, its summary records are removed
+│   ├── ATTENDANCE_SESSIONS → ATTENDANCE_RECORDS: If a session is deleted, its attendance records are removed
+│   ├── ATTENDANCE_SESSIONS → QR_TOKENS_LOG: If a session is deleted, its QR token logs are removed
+│   └── CLASSROOMS → CLASSES: If a classroom is deleted, its classes have classroom_id set to NULL
+├── SET NULL: When referenced records are deleted, foreign key is set to NULL
+│   └── CLASSROOMS → CLASSES: If a classroom is deleted, classes retain reference but classroom_id becomes NULL
+└── RESTRICT: Prevents deletion of records with dependent child records
+    └── Not currently implemented but available for future use
+
+DATABASE TRIGGERS:
+
+1. ATTENDANCE_SUMMARY_UPDATE
+   ├── Event: AFTER INSERT on attendance_records
+   ├── Purpose: Automatically updates attendance summary statistics
+   ├── Logic: Increments session counts and recalculates percentages
+   └── Fields Updated: total_sessions, attended_sessions, late_sessions, absent_sessions, attendance_percentage
+
+TRIGGER DETAILS:
+The update_attendance_summary_after_insert trigger is designed to maintain real-time attendance statistics. When a new record is inserted into the attendance_records table, this trigger:
+   ├── Retrieves the class information from the classes table using the session_id
+   ├── Calculates the appropriate attendance status counters based on the new record's status
+   ├── Either inserts a new record or updates an existing record in attendance_summary
+   ├── Maintains accurate attendance percentages with each new attendance record
+   └── Updates the last_attendance_date to reflect the most recent attendance
+
+DATABASE CONSTRAINTS AND RULES:
+
+PRIMARY KEY CONSTRAINTS:
+All tables implement primary key constraints to ensure each record has a unique identifier:
+├── faculty_id (faculty table)
+├── student_id (students table)
+├── classroom_id (classrooms table)
+├── class_id (classes table)
+├── enrollment_id (student_class_enrollments table)
+├── session_id (attendance_sessions table)
+├── record_id (attendance_records table)
+├── otp_id (otp_logs table)
+├── device_id (student_devices table)
+├── summary_id (attendance_summary table)
+├── log_id (qr_tokens_log table)
+└── admin_id (admins table)
+
+UNIQUE CONSTRAINTS:
+Several fields across tables enforce uniqueness to maintain data integrity:
+├── faculty table: faculty_code, email, phone_number
+├── students table: student_code, email
+├── classrooms table: room_number
+├── classes table: class_code
+├── student_class_enrollments table: (student_id, class_id) combination
+├── attendance_sessions table: qr_token
+├── student_devices table: device_uuid
+├── attendance_summary table: (class_id, student_id, semester, academic_year) combination
+└── admins table: username, email
+
+CHECK CONSTRAINTS:
+Database-level validation rules:
+├── students table: year_of_study must be between 1 and 4
+└── Future enhancements may include additional check constraints
+
+NOT NULL CONSTRAINTS:
+Critical fields that must contain values:
+├── All primary key fields
+├── All foreign key references
+├── Essential identification fields (codes, names, emails)
+├── Password hashes for security
+└── Timestamp fields for audit trails
+
+DEFAULT VALUES:
+Fields with predefined values when not explicitly set:
+├── BOOLEAN fields: is_active (TRUE), biometric_verified (FALSE), etc.
+├── INT fields: counters initialized to 0
+├── DECIMAL fields: percentages and scores initialized to 0.00
+├── TIMESTAMP fields: created_at (CURRENT_TIMESTAMP)
+└── ENUM fields: status fields with default values
+
+INDEXING STRATEGY:
+
+PRIMARY INDEXES:
+├── All primary keys automatically create unique indexes for fast record retrieval
+├── Clustered index on primary key in MySQL InnoDB engine
+└── Used for direct record access by unique identifier
+
+SECONDARY INDEXES:
+├── faculty table: idx_faculty_code, idx_faculty_email, idx_faculty_phone
+├── students table: idx_student_code, idx_student_email, idx_student_program
+├── classrooms table: idx_room_number, idx_building, idx_coordinates
+├── classes table: idx_class_code, idx_faculty_id, idx_classroom_id, idx_schedule, idx_semester_year
+├── student_class_enrollments table: idx_student_id, idx_class_id, idx_enrollment_status
+├── attendance_sessions table: idx_class_id, idx_faculty_id, idx_session_date, idx_qr_token, idx_status
+├── attendance_records table: idx_session_id, idx_student_id, idx_scan_timestamp, idx_status, idx_verification_score
+├── otp_logs table: idx_faculty_id, idx_otp_code, idx_expires_at, idx_is_used
+├── student_devices table: idx_student_id, idx_device_uuid, idx_device_type, idx_last_seen
+├── attendance_summary table: idx_class_id, idx_student_id, idx_attendance_percentage, idx_semester_year
+├── qr_tokens_log table: idx_session_id, idx_token_value, idx_expires_at, idx_generated_at
+└── admins table: idx_username, idx_email, idx_role, idx_is_active
+
+COMPOSITE INDEXES:
+Multi-column indexes for optimized complex queries:
+├── classes.idx_schedule: (schedule_day, start_time) for timetable queries
+├── classes.idx_semester_year: (semester, academic_year) for academic period filtering
+├── student_class_enrollments.UNIQUE: (student_id, class_id) for preventing duplicate enrollments
+└── attendance_summary.UNIQUE: (class_id, student_id, semester, academic_year) for unique summary records
+
+COVERING INDEXES:
+Indexes that include all columns needed for specific queries:
+├── attendance_records unique constraint covers session_id and student_id for duplicate prevention
+└── Future optimization opportunities for frequently accessed data combinations
+
+INDEXING STRATEGY DETAILS:
+├── Primary Keys: All tables have primary key indexes for fast lookups
+├── Foreign Keys: Foreign key columns are indexed for join performance
+├── Unique Constraints: Enforce data integrity (email, codes, tokens)
+├── Composite Indexes: Multi-column indexes for complex queries
+│   ├── Classes table: idx_schedule (schedule_day, start_time) for timetable queries
+│   ├── Classes table: idx_semester_year (semester, academic_year) for academic period filtering
+│   ├── Attendance records: idx_verification_score for performance-based sorting
+│   └── Student enrollments: unique_student_class constraint prevents duplicate enrollments
+└── Full-Text Search: Not currently implemented but available for future enhancement
+
+DATABASE PERFORMANCE OPTIMIZATION:
+
+QUERY OPTIMIZATION TECHNIQUES:
+├── Index usage for JOIN operations between related tables
+├── Efficient WHERE clause filtering using indexed columns
+├── Proper use of LIMIT clauses for pagination
+├── Batch operations for bulk data processing
+└── Connection pooling for efficient database connections
+
+STORAGE ENGINE:
+├── MySQL InnoDB engine for ACID compliance
+├── Row-level locking for concurrent access
+├── Foreign key constraint support
+├── Transaction support for data consistency
+└── Crash recovery capabilities
+
+MEMORY ALLOCATION:
+├── InnoDB buffer pool for caching data and indexes
+├── Query cache for frequently executed queries
+├── Thread cache for connection management
+└── Table cache for open table management
+
+DATABASE SECURITY MEASURES:
+
+AUTHENTICATION:
+├── Password-based authentication for all user accounts
+├── Separate authentication for faculty, students, and administrators
+├── Secure password storage with bcrypt hashing
+└── Session management with JWT tokens
+
+AUTHORIZATION:
+├── Role-based access control (RBAC) for administrators
+├── Faculty can only access their own classes and sessions
+├── Students can only access their own attendance records
+└── Fine-grained permissions based on user roles
+
+DATA ENCRYPTION:
+├── Passwords stored as bcrypt hashes with salt
+├── Sensitive data encrypted at application level
+├── SSL/TLS encryption for data in transit
+└── Database encryption at rest (implementation dependent)
+
+AUDIT TRAILS:
+├── created_at timestamp on all records for creation tracking
+├── updated_at timestamp on modifiable records for change tracking
+├── IP address logging for security monitoring
+└── User agent tracking for device identification
+
+SQL INJECTION PREVENTION:
+├── Parameterized queries using SQLAlchemy ORM
+├── Input validation at application level
+├── Stored procedures for complex operations
+└── Prepared statements for dynamic queries
+
+PASSWORD HASH DETAILS:
+All password hashes in the sample data use bcrypt with the following format:
+├── Prefix: $2b$ (bcrypt identifier)
+├── Cost factor: 12 (computational cost)
+├── Salt: 22-character random salt
+├── Hash: 31-character password hash
+└── Example: $2b$12$LQv3c1yqBwUVHdkuLM3uXeH6GS (represents "faculty123" or "student123")
+
+SECURITY FEATURES:
+├── Password Hashing: PBKDF2/Bcrypt encryption for all user passwords
+├── Data Encryption: Sensitive data encrypted at application level
+├── Audit Trails: created_at/updated_at timestamps on all tables
+├── Access Control: Role-based permissions through admin roles
+├── SQL Injection Prevention: SQLAlchemy ORM parameterized queries
+├── Session Security: JWT tokens with expiration for API authentication
+└── QR Code Security: Dynamic tokens with 5-second refresh intervals and secret key validation
+
+DATABASE MAINTENANCE:
+
+BACKUP STRATEGIES:
+├── Regular mysqldump backups for point-in-time recovery
+├── Incremental backups for transaction log capture
+├── Offsite storage for disaster recovery
+└── Automated backup scheduling and monitoring
+
+ARCHIVE POLICIES:
+├── Historical data archiving for performance optimization
+├── Semester-based data partitioning
+├── Automated cleanup of expired sessions and logs
+└── Retention policies for compliance requirements
+
+PERFORMANCE MONITORING:
+├── Slow query log analysis for optimization opportunities
+├── Index usage statistics for effectiveness measurement
+├── Connection pool monitoring for resource management
+└── Query execution plan analysis for complex operations
+
+DATABASE SCALABILITY:
+
+VERTICAL SCALING:
+├── CPU and memory upgrades for increased capacity
+├── Storage expansion for growing data volumes
+├── Network bandwidth improvements for concurrent access
+└── Database parameter tuning for optimal performance
+
+HORIZONTAL SCALING:
+├── Read replicas for query distribution
+├── Sharding strategies for data distribution
+├── Load balancing for connection management
+└── Caching layers for frequently accessed data
+
+DATABASE VERSION COMPATIBILITY:
+├── MySQL 8.0+ for advanced features and performance
+├── JSON data type support for flexible schemas
+├── Window functions for complex analytics
+└── Common Table Expressions (CTEs) for readable queries
+
+DATABASE IMPLEMENTATION DETAILS:
+
+CHARACTER SET AND COLLATION:
+├── Character Set: utf8mb4 for full Unicode support including emojis
+├── Collation: utf8mb4_unicode_ci for proper sorting and comparison
+├── Consistent encoding across all tables and columns
+└── Support for international characters in names and descriptions
+
+STORAGE ENGINE SPECIFICS:
+├── InnoDB engine for all tables
+├── ACID compliance for data integrity
+├── Row-level locking for concurrent operations
+├── Foreign key constraint enforcement
+└── Transaction support for complex operations
+
+TRANSACTION ISOLATION:
+├── REPEATABLE READ isolation level by default
+├── Consistent reads within transactions
+├── Locking mechanisms for data consistency
+└── Deadlock detection and resolution
+
+CONNECTION MANAGEMENT:
+├── Connection pooling through SQLAlchemy
+├── Maximum connection limits configuration
+├── Connection timeout settings
+└── Idle connection cleanup
+
+DATABASE CONFIGURATION PARAMETERS:
+├── innodb_buffer_pool_size: 70-80% of available RAM
+├── max_connections: Based on expected concurrent users
+├── query_cache_size: For frequently executed queries
+├── tmp_table_size: For temporary table operations
+└── max_allowed_packet: For large data transfers
+
+DATABASE MONITORING METRICS:
+
+PERFORMANCE INDICATORS:
+├── Query response time measurements
+├── Connection pool utilization tracking
+├── Index usage efficiency analysis
+├── Disk I/O performance monitoring
+└── Memory usage optimization
+
+HEALTH CHECKS:
+├── Database connectivity verification
+├── Table integrity checks
+├── Index fragmentation analysis
+├── Storage space monitoring
+└── Backup status verification
+
+ERROR HANDLING:
+├── Duplicate entry detection and handling
+├── Foreign key constraint violation management
+├── Data type validation errors
+├── Connection failure recovery
+└── Transaction rollback mechanisms
+
+DATABASE BACKUP AND RECOVERY:
+
+BACKUP TYPES:
+├── Full database dumps for complete recovery
+├── Incremental backups for point-in-time recovery
+├── Logical backups using mysqldump utility
+└── Physical backups for faster restoration
+
+RECOVERY SCENARIOS:
+├── Point-in-time recovery using binary logs
+├── Table-level recovery for specific data restoration
+├── Database-level recovery for complete system restoration
+└── Cross-server recovery for disaster situations
+
+BACKUP AUTOMATION:
+├── Scheduled backup execution using cron jobs
+├── Backup retention policies for storage management
+├── Backup verification procedures
+└── Alerting mechanisms for backup failures
+
+DATABASE MIGRATION STRATEGIES:
+
+SCHEMA EVOLUTION:
+├── Version-controlled database schema changes
+├── Migration scripts for incremental updates
+├── Rollback procedures for failed migrations
+└── Data transformation during schema changes
+
+DEPLOYMENT APPROACHES:
+├── Blue-green deployment for zero-downtime updates
+├── Rolling updates for distributed systems
+├── Canary releases for gradual rollouts
+└── Rollback capabilities for quick recovery
+
+DATABASE TESTING:
+
+UNIT TESTING:
+├── Schema validation tests
+├── Constraint enforcement tests
+├── Index performance tests
+└── Trigger functionality tests
+
+INTEGRATION TESTING:
+├── End-to-end data flow validation
+├── Concurrent access testing
+├── Performance benchmarking
+└── Security vulnerability assessment
+
+LOAD TESTING:
+├── Concurrent user simulation
+├── Query performance under stress
+├── Connection pool saturation testing
+└── Resource utilization monitoring
+
+DATABASE DOCUMENTATION MAINTENANCE:
+
+VERSION CONTROL:
+├── Documentation updates with schema changes
+├── Change log for database modifications
+├── Release notes for new features
+└── Deprecated feature tracking
+
+AUDIT TRAIL:
+├── Schema modification history
+├── Performance optimization records
+├── Security patch documentation
+└── Compliance requirement tracking
+
+DATABASE CONNECTION AND CONFIGURATION:
+
+DATABASE DRIVER:
+├── PyMySQL 1.1.0 for MySQL connectivity
+├── SQLAlchemy 2.0.43 as ORM layer
+├── Connection pooling for efficient resource management
+└── Automatic reconnection handling
+
+CONNECTION PARAMETERS:
+├── Host: localhost (configurable via MYSQL_HOST environment variable)
+├── Port: 3306 (configurable via MYSQL_PORT environment variable)
+├── User: root (configurable via MYSQL_USER environment variable)
+├── Password: '' (configurable via MYSQL_PASSWORD environment variable)
+├── Database: intelliattend_db (configurable via MYSQL_DB environment variable)
+└── Character Set: utf8mb4 with utf8mb4_unicode_ci collation
+
+SQLALCHEMY CONFIGURATION:
+├── Connection URI: mysql+pymysql://user:password@host:port/database
+├── Pool recycle: 280 seconds to prevent connection timeouts
+├── Pool timeout: 20 seconds for connection acquisition
+├── Pool pre-ping: Enabled to verify connection validity
+└── Track modifications: Disabled for performance optimization
+
+DATABASE ENVIRONMENT VARIABLES:
+
+REQUIRED VARIABLES:
+├── MYSQL_HOST: Database server hostname (default: localhost)
+├── MYSQL_USER: Database username (default: root)
+├── MYSQL_PASSWORD: Database password (default: empty)
+├── MYSQL_DB: Database name (default: intelliattend_db)
+├── MYSQL_PORT: Database port (default: 3306)
+├── SECRET_KEY: Flask application secret key
+└── JWT_SECRET_KEY: JWT token signing secret
+
+OPTIONAL VARIABLES:
+├── REDIS_URL: Redis server URL for rate limiting (default: redis://localhost:6379/0)
+├── TWILIO_ACCOUNT_SID: Twilio account SID for SMS features
+├── TWILIO_AUTH_TOKEN: Twilio authentication token
+├── TWILIO_PHONE_NUMBER: Twilio phone number for SMS
+├── MAIL_SERVER: SMTP server for email notifications
+├── MAIL_PORT: SMTP server port
+├── MAIL_USERNAME: SMTP authentication username
+└── MAIL_PASSWORD: SMTP authentication password
+
+DATABASE DEPLOYMENT:
+
+DEVELOPMENT ENVIRONMENT:
+├── SQLite can be used for testing (in-memory database)
+├── Local MySQL server recommended for development
+├── Default configuration values suitable for local development
+└── Debug mode enabled for detailed error reporting
+
+PRODUCTION ENVIRONMENT:
+├── MySQL 8.0+ required for full feature support
+├── Connection pooling with increased pool size (20) and overflow (30)
+├── Redis integration for rate limiting
+├── SSL/TLS encryption for data in transit
+└── Performance optimizations for high-concurrency scenarios
+
+DATABASE MIGRATION AND EVOLUTION:
+
+SCHEMA MIGRATION TOOLS:
+├── Alembic 1.16.5 for database schema versioning
+├── Migration scripts for incremental schema changes
+├── Downgrade capabilities for rollback scenarios
+└── Automatic migration script generation
+
+DATABASE INITIALIZATION:
+
+SETUP SCRIPTS:
+├── database_setup.py: Full database initialization with sample data
+├── simple_database_setup.py: Basic database initialization
+├── reset_db.py: Database reset functionality
+└── database_schema.sql: Raw SQL schema definition
+
+INITIALIZATION PROCESS:
+1. Create database with utf8mb4 character set
+2. Execute schema creation statements
+3. Insert sample data for testing
+4. Verify database connectivity and integrity
+5. Report setup completion with credentials
+
+DATABASE ACCESS PATTERNS:
+
+ORM USAGE:
+├── SQLAlchemy models for all database entities
+├── Relationship definitions for foreign key associations
+├── Query optimization through eager loading
+└── Transaction management with rollback support
+
+DIRECT SQL:
+├── Raw SQL execution for complex queries
+├── Parameterized queries to prevent SQL injection
+├── Stored procedures for reusable logic
+└── Batch operations for bulk data processing
+
+DATABASE MONITORING AND LOGGING:
+
+PERFORMANCE METRICS:
+├── Query execution time tracking
+├── Connection pool utilization monitoring
+├── Index usage analysis
+└── Slow query identification
+
+LOGGING CONFIGURATION:
+├── INFO level logging for normal operations
+├── ERROR level logging for failures
+├── DEBUG level logging for development
+└── File-based and console logging support
+
+DATABASE SECURITY BEST PRACTICES:
+
+PASSWORD SECURITY:
+├── bcrypt 4.0.1 for password hashing
+├── Salted hashes to prevent rainbow table attacks
+├── Configurable cost factors for future proofing
+└── Support for legacy password formats during migration
+
+ACCESS CONTROL:
+├── JWT tokens for stateless authentication
+├── Role-based access control for administrators
+├── Session timeout enforcement
+└── Token blacklisting for secure logout
+
+DATA PROTECTION:
+├── SSL/TLS encryption for network traffic
+├── Field-level encryption for sensitive data
+├── Regular security audits
+└── Compliance with data protection regulations
+
+DATABASE TROUBLESHOOTING:
+
+COMMON ISSUES:
+├── Connection failures: Check database server status and credentials
+├── Permission errors: Verify database user privileges
+├── Lock contention: Analyze long-running transactions
+└── Performance degradation: Review query execution plans
+
+DIAGNOSTIC TOOLS:
+├── MySQL slow query log analysis
+├── Performance schema monitoring
+├── Connection pool status inspection
+└── Application-level logging correlation
+
+RECOVERY PROCEDURES:
+├── Point-in-time recovery using binary logs
+├── Table-level restoration from backups
+├── Database-level recovery from dumps
+└── Cross-server recovery for disaster scenarios
+
+DATABASE RELATIONSHIP DIAGRAM:
+
+                    ┌─────────────┐
+                    │   ADMINS    │
+                    └─────────────┘
+                           │
+                    ┌─────────────┐
+                    │   FACULTY   │◄─┐
+                    └─────────────┘  │
+                         │ 1        │
+                         │          │
+                    ┌─────────────┐  │
+                    │   CLASSES   │  │
+                    └─────────────┘  │
+                         │ 1        │
+                         │          │
+              ┌──────────┴──────────┐│
+              │                     ││
+       ┌─────────────┐    ┌──────────────────┐
+       │ CLASSROOMS  │    │ATTENDANCE_SESSION│
+       └─────────────┘    └──────────────────┘
+                                │ 1
+                                │
+                     ┌──────────┴──────────┐
+                     │                     │
+              ┌─────────────┐    ┌──────────────────┐
+              │ STUDENTS    │    │   OTP_LOGS       │
+              └─────────────┘    └──────────────────┘
+                   │ 1                 │ 1
+                   │                   │
+        ┌──────────┼──────────┐        │
+        │          │          │        │
+┌─────────────┐ ┌──────────────────┐  │
+│STUDENT_CLASS│ │STUDENT_DEVICES   │  │
+│_ENROLLMENTS │ └──────────────────┘  │
+└─────────────┘                       │
+     │ 1                              │
+     │                                │
+┌─────────────┐    ┌──────────────────┐│
+│ATTENDANCE_  │    │ATTENDANCE_      ││
+│RECORDS      │    │SUMMARY          ││
+└─────────────┘    └──────────────────┘│
+     │ 1                              │
+     │                         ┌─────────────┐
+     └────────────────────────►│QR_TOKENS_LOG│
+                               └─────────────┘
+
+SAMPLE DATA:
+The database includes sample data for testing and demonstration:
+├── 3 Faculty Members: Computer Science and IT departments
+├── 5 Students: Enrolled in various programs and classes
+├── 4 Classrooms: Different buildings and capacities
+├── 4 Classes: Various subjects with schedules
+├── 8 Enrollments: Students assigned to classes
+└── 1 Admin User: Super admin access for system management

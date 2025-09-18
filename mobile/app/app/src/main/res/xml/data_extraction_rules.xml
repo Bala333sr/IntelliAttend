@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- Exclude sensitive data from cloud backups -->
+        <exclude domain="sharedpref" path="intelliattend_secure_prefs"/>
+        <exclude domain="database" />
+        <exclude domain="file" path="qr_cache"/>
+    </cloud-backup>
+</data-extraction-rules>
