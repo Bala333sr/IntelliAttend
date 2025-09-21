@@ -61,4 +61,8 @@ class IntelliAttendApplication : Application() {
     fun getAttendanceRepository(): AttendanceRepository {
         return attendanceRepository
     }
+    
+    fun getApiClient(): ApiClient {
+        return apiClient
+    }
 }

@@ -32,6 +32,7 @@ import com.intelliattend.student.utils.PermissionUtils
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onRequestPermissions: () -> Unit,
+    onNavigateToRegistration: () -> Unit, // Add navigation to registration
     viewModel: LoginViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -196,7 +197,17 @@ fun LoginScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Registration option
+            TextButton(
+                onClick = onNavigateToRegistration,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Don't have an account? Register")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Permissions check
             if (!PermissionUtils.areCriticalPermissionsGranted(context)) {

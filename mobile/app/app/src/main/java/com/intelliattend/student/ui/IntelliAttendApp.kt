@@ -13,6 +13,7 @@ import com.intelliattend.student.IntelliAttendApplication
 import com.intelliattend.student.bt.BluetoothActivity
 import com.intelliattend.student.bt.BluetoothScreen
 import com.intelliattend.student.ui.auth.LoginScreen
+import com.intelliattend.student.ui.auth.RegistrationScreen
 import com.intelliattend.student.ui.biometric.BiometricActivity
 import com.intelliattend.student.ui.home.HomeScreen
 import com.intelliattend.student.ui.permissions.PermissionScreen
@@ -102,6 +103,22 @@ fun IntelliAttendApp() {
                 },
                 onRequestPermissions = {
                     navController.navigate("permissions")
+                },
+                onNavigateToRegistration = {
+                    navController.navigate("registration")
+                }
+            )
+        }
+
+        composable("registration") {
+            RegistrationScreen(
+                onRegistrationSuccess = {
+                    navController.navigate("login") {
+                        popUpTo("registration") { inclusive = true }
+                    }
+                },
+                onBackToLogin = {
+                    navController.popBackStack()
                 }
             )
         }
