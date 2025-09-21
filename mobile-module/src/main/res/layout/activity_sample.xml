@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="IntelliAttend Mobile Module Sample"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- WiFi Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="WiFi Information"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/wifiSSIDTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SSID: Not connected"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/wifiBSSIDTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BSSID: --"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/wifiRSSITextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RSSI: -- dBm"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Bluetooth Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bluetooth Devices"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bluetoothDevicesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- GPS Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GPS Location"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/locationTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Location: Not available"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/accuracyTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Accuracy: -- meters"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/altitudeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Altitude: -- meters"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Status Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Module Status"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/statusTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ready to collect data"
+                android:layout_marginBottom="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -14,7 +14,10 @@ interface ApiService {
      */
     @POST("student/login")
     suspend fun studentLogin(@Body request: LoginRequest): Response<LoginResponse>
-    
+
+    @POST("student/register")
+    suspend fun studentRegister(@Body request: StudentRegistrationRequest): Response<ApiResponse>
+
     @POST("student/logout")
     suspend fun studentLogout(@Header("Authorization") token: String): Response<ApiResponse>
     
@@ -107,6 +110,20 @@ data class SessionStatusResponse(
     val success: Boolean,
     val session: SessionStatus?,
     val error: String? = null
+)
+
+/**
+ * Student registration request
+ */
+data class StudentRegistrationRequest(
+    val studentCode: String,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val phoneNumber: String?,
+    val program: String,
+    val yearOfStudy: Int?,
+    val password: String
 )
 
 /**
