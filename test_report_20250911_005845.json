@@ -1,0 +1,137 @@
+{
+  "summary": {
+    "total_tests": 18,
+    "passed": 13,
+    "failed": 5,
+    "success_rate": 72.22222222222221,
+    "timestamp": "2025-09-11T00:58:45.470601"
+  },
+  "results": [
+    {
+      "test": "Server Connection",
+      "status": "\u2705 PASS",
+      "message": "Server responded with status 200",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.178263"
+    },
+    {
+      "test": "Database Connection",
+      "status": "\u274c FAIL",
+      "message": "Database file not found",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.178326"
+    },
+    {
+      "test": "File Structure: app.py",
+      "status": "\u2705 PASS",
+      "message": "Path: /Users/anji/Desktop/IntelliAttend/server/app.py",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.178351"
+    },
+    {
+      "test": "File Structure: AuthRepository.kt",
+      "status": "\u2705 PASS",
+      "message": "Path: /Users/anji/Desktop/IntelliAttend/Mobile App/app/src/main/java/com/intelliattend/student/data/repository/AuthRepository.kt",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.178370"
+    },
+    {
+      "test": "File Structure: intelliattend.db",
+      "status": "\u274c FAIL",
+      "message": "Path: /Users/anji/Desktop/IntelliAttend/instance/intelliattend.db",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.178380"
+    },
+    {
+      "test": "File Structure: tokens",
+      "status": "\u2705 PASS",
+      "message": "Path: /Users/anji/Desktop/IntelliAttend/QR_DATA/tokens",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.178391"
+    },
+    {
+      "test": "Faculty Login",
+      "status": "\u2705 PASS",
+      "message": "Logged in as John Smith",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.301252"
+    },
+    {
+      "test": "Student Login",
+      "status": "\u2705 PASS",
+      "message": "Logged in as Alice Williams",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.424267"
+    },
+    {
+      "test": "Student Response Format",
+      "status": "\u2705 PASS",
+      "message": "All required fields present",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.424288"
+    },
+    {
+      "test": "Student Profile",
+      "status": "\u274c FAIL",
+      "message": "Not found",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.426820"
+    },
+    {
+      "test": "OTP Generation",
+      "status": "\u2705 PASS",
+      "message": "OTP: 200307, Expires: 2025-09-10T19:33:42.428789",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.432812"
+    },
+    {
+      "test": "Session Creation",
+      "status": "\u2705 PASS",
+      "message": "Session ID: 42, Expires: 2025-09-10T19:30:42.436771",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:42.442781"
+    },
+    {
+      "test": "QR Generation",
+      "status": "\u2705 PASS",
+      "message": "QR URL: /static/qr_tokens/qr_session_42_1757532522.png, Sequence: 1",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:45.455217"
+    },
+    {
+      "test": "QR File Exists",
+      "status": "\u2705 PASS",
+      "message": "File path: /Users/anji/Desktop/IntelliAttend/static/qr_tokens/qr_session_42_1757532522.png",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:45.455300"
+    },
+    {
+      "test": "API GET /api/health",
+      "status": "\u2705 PASS",
+      "message": "Status: 404",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:45.459387"
+    },
+    {
+      "test": "API GET /api/qr/current/999",
+      "status": "\u2705 PASS",
+      "message": "Status: 404",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:45.463176"
+    },
+    {
+      "test": "Faculty Logout",
+      "status": "\u274c FAIL",
+      "message": "",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:45.470121"
+    },
+    {
+      "test": "Student Logout",
+      "status": "\u274c FAIL",
+      "message": "",
+      "details": null,
+      "timestamp": "2025-09-11T00:58:45.470153"
+    }
+  ]
+}

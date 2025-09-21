@@ -1,0 +1,109 @@
+{
+  "summary": {
+    "total_tests": 14,
+    "passed": 3,
+    "failed": 11,
+    "success_rate": 21.428571428571427,
+    "timestamp": "2025-09-11T01:00:40.686578"
+  },
+  "results": [
+    {
+      "test": "Server Connection",
+      "status": "\u274c FAIL",
+      "message": "Server not accessible",
+      "details": "HTTPConnectionPool(host='192.168.0.3', port=5002): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1052270e0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+      "timestamp": "2025-09-11T01:00:40.680923"
+    },
+    {
+      "test": "Database Connection",
+      "status": "\u274c FAIL",
+      "message": "Database file not found",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.680973"
+    },
+    {
+      "test": "File Structure: app.py",
+      "status": "\u2705 PASS",
+      "message": "Path: /Users/anji/Desktop/IntelliAttend/server/app.py",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.680998"
+    },
+    {
+      "test": "File Structure: AuthRepository.kt",
+      "status": "\u2705 PASS",
+      "message": "Path: /Users/anji/Desktop/IntelliAttend/Mobile App/app/src/main/java/com/intelliattend/student/data/repository/AuthRepository.kt",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.681019"
+    },
+    {
+      "test": "File Structure: intelliattend.db",
+      "status": "\u274c FAIL",
+      "message": "Path: /Users/anji/Desktop/IntelliAttend/instance/intelliattend.db",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.681029"
+    },
+    {
+      "test": "File Structure: tokens",
+      "status": "\u2705 PASS",
+      "message": "Path: /Users/anji/Desktop/IntelliAttend/QR_DATA/tokens",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.681039"
+    },
+    {
+      "test": "Faculty Login",
+      "status": "\u274c FAIL",
+      "message": "Request failed",
+      "details": "HTTPConnectionPool(host='192.168.0.3', port=5002): Max retries exceeded with url: /api/faculty/login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x105236d50>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+      "timestamp": "2025-09-11T01:00:40.682212"
+    },
+    {
+      "test": "Student Login",
+      "status": "\u274c FAIL",
+      "message": "Request failed",
+      "details": "HTTPConnectionPool(host='192.168.0.3', port=5002): Max retries exceeded with url: /api/student/login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x105237610>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+      "timestamp": "2025-09-11T01:00:40.683210"
+    },
+    {
+      "test": "Student Profile",
+      "status": "\u274c FAIL",
+      "message": "No student token",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.683230"
+    },
+    {
+      "test": "OTP Generation",
+      "status": "\u274c FAIL",
+      "message": "No faculty token available",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.683239"
+    },
+    {
+      "test": "Session Creation",
+      "status": "\u274c FAIL",
+      "message": "No OTP available",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.683244"
+    },
+    {
+      "test": "QR Generation",
+      "status": "\u274c FAIL",
+      "message": "No session ID available",
+      "details": null,
+      "timestamp": "2025-09-11T01:00:40.683248"
+    },
+    {
+      "test": "API GET /api/health",
+      "status": "\u274c FAIL",
+      "message": "Request failed",
+      "details": "HTTPConnectionPool(host='192.168.0.3', port=5002): Max retries exceeded with url: /api/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x10533c640>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+      "timestamp": "2025-09-11T01:00:40.684642"
+    },
+    {
+      "test": "API GET /api/qr/current/999",
+      "status": "\u274c FAIL",
+      "message": "Request failed",
+      "details": "HTTPConnectionPool(host='192.168.0.3', port=5002): Max retries exceeded with url: /api/qr/current/999 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x105203490>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+      "timestamp": "2025-09-11T01:00:40.685742"
+    }
+  ]
+}
