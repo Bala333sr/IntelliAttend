@@ -2872,6 +2872,13 @@
 
         // Initialize charts
         document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication first
+            const adminToken = getAdminToken();
+            if (!adminToken) {
+                // No token found, redirect to login
+                window.location.href = '/admin';
+                return;
+            }
             // Attendance Chart
             const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
             const attendanceChart = new Chart(attendanceCtx, {

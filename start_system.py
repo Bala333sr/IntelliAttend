@@ -133,7 +133,7 @@ class IntelliAttendStarter:
             cursor = connection.cursor()
             
             # Check if database exists
-            cursor.execute("SHOW DATABASES LIKE 'intelliattend_db'")
+            cursor.execute("SHOW DATABASES LIKE 'IntelliAttend_DataBase'")
             db_exists = cursor.fetchone()
             
             cursor.close()
@@ -141,10 +141,10 @@ class IntelliAttendStarter:
             
             if db_exists:
                 print(f"  ✅ MySQL connection successful")
-                print(f"  ✅ Database 'intelliattend_db' found")
+                print(f"  ✅ Database 'IntelliAttend_DataBase' found")
                 return True
             else:
-                print(f"  ⚠️  Database 'intelliattend_db' not found")
+                print(f"  ⚠️  Database 'IntelliAttend_DataBase' not found")
                 return False
             
         except Exception as e:
@@ -163,7 +163,7 @@ class IntelliAttendStarter:
                 'host': 'localhost',
                 'user': 'root',
                 'password': '',
-                'database': 'intelliattend_db',
+                'database': 'IntelliAttend_DataBase',
                 'charset': 'utf8mb4',
                 'port': 3306
             }

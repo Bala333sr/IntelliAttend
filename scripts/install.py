@@ -71,7 +71,7 @@ FLASK_DEBUG=True
 MYSQL_HOST=localhost
 MYSQL_USER=root
 MYSQL_PASSWORD=password
-MYSQL_DB=intelliattend_db
+MYSQL_DB=IntelliAttend_DataBase
 MYSQL_PORT=3306
 
 # JWT Configuration

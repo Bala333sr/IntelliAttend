@@ -2,7 +2,7 @@
 //                              5. DATABASE DESIGN
 //================================================================================
 
-DATABASE: intelliattend_db (MySQL)
+DATABASE: IntelliAttend_DataBase (MySQL)
 TABLES: 12 Core Tables with Referential Integrity
 
 DATABASE SCHEMA OVERVIEW:
@@ -28,7 +28,7 @@ DATABASE CONNECTION:
 ├── Port: 3306 (configurable)
 ├── User: root (configurable)
 ├── Password: '' (configurable)
-├── Database: intelliattend_db (configurable)
+├── Database: IntelliAttend_DataBase (configurable)
 └── URI Format: mysql+pymysql://user:password@host:port/database
 
 KEY TABLES WITH DETAILED STRUCTURE:
@@ -703,7 +703,7 @@ CONNECTION PARAMETERS:
 ├── Port: 3306 (configurable via MYSQL_PORT environment variable)
 ├── User: root (configurable via MYSQL_USER environment variable)
 ├── Password: '' (configurable via MYSQL_PASSWORD environment variable)
-├── Database: intelliattend_db (configurable via MYSQL_DB environment variable)
+├── Database: IntelliAttend_DataBase (configurable via MYSQL_DB environment variable)
 └── Character Set: utf8mb4 with utf8mb4_unicode_ci collation
 
 SQLALCHEMY CONFIGURATION:
@@ -719,7 +719,7 @@ REQUIRED VARIABLES:
 ├── MYSQL_HOST: Database server hostname (default: localhost)
 ├── MYSQL_USER: Database username (default: root)
 ├── MYSQL_PASSWORD: Database password (default: empty)
-├── MYSQL_DB: Database name (default: intelliattend_db)
+├── MYSQL_DB: Database name (default: IntelliAttend_DataBase)
 ├── MYSQL_PORT: Database port (default: 3306)
 ├── SECRET_KEY: Flask application secret key
 └── JWT_SECRET_KEY: JWT token signing secret

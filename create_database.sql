@@ -4,14 +4,14 @@
 -- ============================================================================
 
 -- Drop existing database if exists
-DROP DATABASE IF EXISTS intelliattend_db;
+DROP DATABASE IF EXISTS IntelliAttend_DataBase;
 
 -- Create database with UTF8MB4 support
-CREATE DATABASE intelliattend_db 
+CREATE DATABASE IntelliAttend_DataBase 
 CHARACTER SET utf8mb4 
 COLLATE utf8mb4_unicode_ci;
 
-USE intelliattend_db;
+USE IntelliAttend_DataBase;
 
 -- ============================================================================
 -- 1. FACULTY TABLE

@@ -233,23 +233,43 @@
             loginButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing In...';
             loginButton.disabled = true;
             
-            // In a real implementation, this would make an API call to /api/admin/login
-            // For demonstration, we'll simulate a successful login
-            setTimeout(function() {
+            // Make API call to /api/admin/login
+            fetch('/api/admin/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
                 // Reset button
                 loginButton.innerHTML = originalText;
                 loginButton.disabled = false;
                 
-                // Simulate successful login
-                if (username === 'admin' && password === 'admin123') {
+                if (data.success) {
+                    // Store JWT token in localStorage
+                    localStorage.setItem('admin_token', data.access_token);
+                    
                     showAlert('success', 'Login successful! Redirecting to dashboard...');
                     setTimeout(function() {
                         window.location.href = '/admin/dashboard';
                     }, 1500);
                 } else {
-                    showAlert('danger', 'Invalid username or password. Please try again.');
+                    showAlert('danger', data.error || 'Login failed. Please try again.');
                 }
-            }, 1500);
+            })
+            .catch(error => {
+                // Reset button
+                loginButton.innerHTML = originalText;
+                loginButton.disabled = false;
+                
+                console.error('Login error:', error);
+                showAlert('danger', 'Network error. Please check your connection and try again.');
+            });
         });
 
         // Show alert message
