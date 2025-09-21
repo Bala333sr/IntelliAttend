@@ -2,8 +2,8 @@
 -- MySQL Database Setup Script
 
 -- Create database if it doesn't exist
-CREATE DATABASE IF NOT EXISTS intelliattend_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE intelliattend_db;
+CREATE DATABASE IF NOT EXISTS IntelliAttend_DataBase CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE IntelliAttend_DataBase;
 
 -- Enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;

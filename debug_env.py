@@ -15,7 +15,7 @@ for key, value in os.environ.items():
 MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'localhost'
 MYSQL_USER = os.environ.get('MYSQL_USER') or 'root'
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or ''
-MYSQL_DB = os.environ.get('MYSQL_DB') or 'intelliattend_db'
+MYSQL_DB = os.environ.get('MYSQL_DB') or 'IntelliAttend_DataBase'
 MYSQL_PORT = int(os.environ.get('MYSQL_PORT', 3306))
 
 print("\nConfig values:")

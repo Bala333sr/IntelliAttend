@@ -22,7 +22,7 @@ DB_CONFIG = {
     'port': int(os.environ.get('MYSQL_PORT', 3306))
 }
 
-DATABASE_NAME = 'intelliattend_db'
+DATABASE_NAME = 'IntelliAttend_DataBase'
 
 def create_simple_database():
     """Create database and basic tables"""
