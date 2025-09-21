@@ -121,7 +121,7 @@ else:
     # Development: More lenient limits for testing
     limiter = Limiter(
         key_func=get_client_key,
-        default_limits=["2000 per day", "500 per hour", "50 per minute"]
+        default_limits=["10000 per day", "2000 per hour", "200 per minute"]
     )
 limiter.init_app(app)
 
@@ -590,7 +590,7 @@ def db_transaction():
 # ============================================================================
 
 @app.route('/api/faculty/login', methods=['POST'])
-@limiter.limit("3 per minute")
+@limiter.limit("30 per minute")
 def faculty_login():
     """Faculty login endpoint"""
     try:
@@ -659,7 +659,7 @@ def admin_dashboard():
 
 
 @app.route('/api/student/login', methods=['POST'])
-@limiter.limit("3 per minute")
+@limiter.limit("30 per minute")
 def student_login():
     """Student login endpoint"""
     try:
@@ -736,6 +736,152 @@ def student_login():
         logger.error(f"Login error: {str(e)}")
         import traceback
         traceback.print_exc()
+        return standardize_response(
+            success=False,
+            error=str(e),
+            status_code=500
+        )
+
+@app.route('/api/student/register', methods=['POST'])
+@limiter.limit("20 per minute")
+def student_register():
+    """Student registration endpoint for mobile app"""
+    try:
+        logger.info(f"Student registration attempt from {request.remote_addr}")
+        
+        data = request.get_json()
+        if not data:
+            return standardize_response(
+                success=False,
+                error='JSON data required',
+                status_code=400
+            )
+        
+        # Validate required fields
+        required_fields = ['student_code', 'first_name', 'last_name', 'email', 'password']
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return standardize_response(
+                    success=False,
+                    error=f'{field} is required',
+                    status_code=400
+                )
+        
+        # Check if student already exists
+        existing = Student.query.filter(
+            db.or_(
+                Student.student_code == data['student_code'],
+                Student.email == data['email']
+            )
+        ).first()
+        
+        if existing:
+            return standardize_response(
+                success=False,
+                error='Student with this code or email already exists',
+                status_code=400
+            )
+        
+        # Create new student
+        student = Student(
+            student_code=data['student_code'],
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            email=data['email'],
+            phone_number=data.get('phone_number'),
+            program=data.get('program', 'Not Specified'),
+            year_of_study=data.get('year_of_study', 1),
+            password_hash=bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+            is_active=True
+        )
+        
+        db.session.add(student)
+        db.session.commit()
+        
+        logger.info(f"Student registered successfully: {student.email}")
+        
+        # Create access token for auto-login
+        access_token = create_access_token(
+            identity=str(student.student_id),
+            additional_claims={'type': 'student', 'student_id': student.student_id}
+        )
+        
+        student_data = {
+            'student_id': student.student_id,
+            'student_code': student.student_code,
+            'first_name': student.first_name,
+            'last_name': student.last_name,
+            'email': student.email,
+            'program': student.program,
+            'year_of_study': student.year_of_study
+        }
+        
+        return standardize_response(
+            success=True,
+            data={
+                'access_token': access_token,
+                'student': student_data
+            },
+            message='Registration successful',
+            status_code=201
+        )
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Registration error: {str(e)}")
+        return standardize_response(
+            success=False,
+            error=str(e),
+            status_code=500
+        )
+
+@app.route('/api/student/profile', methods=['GET'])
+@app.route('/api/student/me', methods=['GET'])
+@jwt_required()
+def student_profile():
+    """Get current student profile - used for auto-login verification"""
+    try:
+        claims = get_jwt()
+        if claims.get('type') != 'student':
+            return standardize_response(
+                success=False,
+                error='Student access required',
+                status_code=403
+            )
+        
+        student_id = claims.get('student_id')
+        student = Student.query.get(student_id)
+        
+        if not student or not student.is_active:
+            return standardize_response(
+                success=False,
+                error='Student not found or inactive',
+                status_code=404
+            )
+        
+        student_data = {
+            'student_id': student.student_id,
+            'student_code': student.student_code,
+            'first_name': student.first_name,
+            'last_name': student.last_name,
+            'email': student.email,
+            'phone_number': student.phone_number,
+            'program': student.program,
+            'year_of_study': student.year_of_study or 1,
+            'is_active': student.is_active
+        }
+        
+        return standardize_response(
+            success=True,
+            data={
+                'student': student_data
+            },
+            message='Profile retrieved successfully',
+            status_code=200
+        )
+        
+    except Exception as e:
+        logger.error(f"Profile error: {str(e)}")
         return standardize_response(
             success=False,
             error=str(e),
@@ -4186,6 +4332,97 @@ except ImportError as e:
 except Exception as e:
     logger.error(f"❌ Failed to initialize IP Discovery Service: {e}")
 
+@app.route('/api/student/mobile-login', methods=['POST'])
+@limiter.limit("30 per minute")
+def student_mobile_login():
+    """Mobile-app-friendly student login endpoint with common response format"""
+    try:
+        data = request.get_json()
+        email = data.get('email') if data else None
+        password = data.get('password') if data else None
+        
+        if not email or not password:
+            return jsonify({
+                'status': 'error',
+                'success': False,
+                'message': 'Email and password required',
+                'error': 'Email and password required'
+            }), 400
+        
+        student = Student.query.filter_by(email=email, is_active=True).first()
+        
+        if student and check_password(password, student.password_hash):
+            access_token = create_access_token(
+                identity=str(student.student_id),
+                additional_claims={'type': 'student', 'student_id': student.student_id}
+            )
+            
+            # Multiple response formats for better mobile app compatibility
+            return jsonify({
+                # Format 1: Standard
+                'status': 'success',
+                'success': True,
+                'message': 'Login successful',
+                
+                # Format 2: Token variations
+                'token': access_token,
+                'access_token': access_token,
+                'authToken': access_token,
+                'jwt': access_token,
+                
+                # Format 3: User data variations
+                'user': {
+                    'id': student.student_id,
+                    'user_id': student.student_id,
+                    'student_id': student.student_id,
+                    'student_code': student.student_code,
+                    'first_name': student.first_name,
+                    'last_name': student.last_name,
+                    'name': f'{student.first_name} {student.last_name}',
+                    'email': student.email,
+                    'program': student.program,
+                    'year_of_study': student.year_of_study or 1,
+                    'role': 'student',
+                    'user_type': 'student'
+                },
+                'student': {
+                    'student_id': student.student_id,
+                    'student_code': student.student_code,
+                    'first_name': student.first_name,
+                    'last_name': student.last_name,
+                    'email': student.email,
+                    'program': student.program,
+                    'year_of_study': student.year_of_study or 1
+                },
+                
+                # Format 4: Additional fields mobile apps often expect
+                'authenticated': True,
+                'login': True,
+                'isLoggedIn': True,
+                'status_code': 200,
+                'code': 200
+            }), 200
+        else:
+            return jsonify({
+                'status': 'error',
+                'success': False,
+                'message': 'Invalid credentials',
+                'error': 'Invalid email or password',
+                'authenticated': False,
+                'login': False,
+                'isLoggedIn': False
+            }), 401
+            
+    except Exception as e:
+        logger.error(f"Mobile login error: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'success': False,
+            'message': 'Login failed',
+            'error': str(e),
+            'authenticated': False
+        }), 500
+
 if __name__ == '__main__':
     # Create tables
     with app.app_context():
@@ -4202,3 +4439,34 @@ if __name__ == '__main__':
     logger.info("=" * 50)
     
     app.run(debug=True, host='0.0.0.0', port=5002, threaded=True)
+
+@app.route('/api/student/login-debug', methods=['POST'])
+@limiter.limit("30 per minute")
+def student_login_debug():
+    """Debug version of student login to see what mobile app sends"""
+    try:
+        logger.info(f"DEBUG: Login attempt from {request.remote_addr}")
+        logger.info(f"DEBUG: Headers: {dict(request.headers)}")
+        logger.info(f"DEBUG: Content-Type: {request.content_type}")
+        logger.info(f"DEBUG: Raw data: {request.get_data()}")
+        
+        data = request.get_json()
+        logger.info(f"DEBUG: Parsed JSON: {data}")
+        
+        if data:
+            email = data.get('email')
+            password = data.get('password')
+            logger.info(f"DEBUG: Email: '{email}' (len: {len(email) if email else 0})")
+            logger.info(f"DEBUG: Password: '{password}' (len: {len(password) if password else 0})")
+            logger.info(f"DEBUG: Password bytes: {password.encode('utf-8') if password else None}")
+        
+        return jsonify({
+            'debug': True,
+            'received_data': data,
+            'headers': dict(request.headers),
+            'content_type': request.content_type
+        })
+        
+    except Exception as e:
+        logger.error(f"DEBUG: Error: {str(e)}")
+        return jsonify({'debug_error': str(e)}), 500
