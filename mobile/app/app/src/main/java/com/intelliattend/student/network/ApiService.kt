@@ -12,7 +12,7 @@ interface ApiService {
     /**
      * Student Authentication Endpoints
      */
-    @POST("student/login")
+    @POST("student/mobile-login")
     suspend fun studentLogin(@Body request: LoginRequest): Response<LoginResponse>
 
     @POST("student/register")
