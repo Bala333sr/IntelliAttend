@@ -1,18 +1,44 @@
-# IntelliAttend Mobile App
+# IntelliAttend - Intelligent Attendance Management System
 
-A modern Android application for intelligent attendance management using device fingerprinting, location services, and biometric authentication.
+A comprehensive attendance management system for educational institutions featuring mobile apps, web dashboards, and real-time tracking capabilities.
 
-## Features
+## System Components
 
+### 📱 Mobile Application (`mobile/app/`)
+- **Android App**: Modern Kotlin app with Jetpack Compose UI
 - **Device Fingerprinting**: Unique device identification for secure attendance
 - **Location-based Attendance**: GPS and WiFi-based location verification
 - **Biometric Authentication**: Fingerprint and face recognition support
 - **Real-time Sync**: Instant attendance data synchronization
 - **Offline Support**: Works without internet connectivity
-- **Modern UI**: Material Design 3 with Jetpack Compose
+
+### 🖥️ Backend API (`backend/`)
+- **Python Flask API**: RESTful API server for mobile and web clients
+- **Database Management**: SQLite/PostgreSQL with migration support
+- **QR Code Generation**: Dynamic QR codes for attendance sessions
+- **Device Registration**: Secure device enrollment and management
+- **Attendance Processing**: Real-time attendance validation and storage
+
+### 🌐 Web Dashboard (`frontend/`)
+- **Admin Interface**: Comprehensive dashboard for administrators
+- **Student Management**: Enrollment, device registration, and profile management
+- **Faculty Tools**: Class management and attendance monitoring
+- **Analytics**: Attendance statistics and reporting
+- **Real-time Updates**: Live attendance tracking and notifications
+
+### 📊 Real-time Presence (`realtime_presence/`)
+- **WebSocket Server**: Real-time presence tracking and notifications
+- **Live Updates**: Instant attendance status updates
+- **Session Management**: Active session monitoring and coordination
+
+### 🗄️ Database (`database/`)
+- **Schema Definition**: Complete database structure and relationships
+- **Migration Scripts**: Database setup and upgrade utilities
+- **Sample Data**: Test data for development and testing
 
 ## Tech Stack
 
+### Mobile (Android)
 - **Language**: Kotlin
 - **UI Framework**: Jetpack Compose
 - **Architecture**: MVVM with Clean Architecture
@@ -23,21 +49,65 @@ A modern Android application for intelligent attendance management using device 
 - **Location**: Google Play Services Location
 - **Build System**: Gradle with KSP
 
+### Backend
+- **Language**: Python 3.8+
+- **Framework**: Flask
+- **Database**: SQLite/PostgreSQL
+- **ORM**: SQLAlchemy
+- **Authentication**: JWT tokens
+- **QR Codes**: qrcode library
+- **API Documentation**: Flask-RESTX
+
+### Frontend
+- **Framework**: React.js
+- **Styling**: Tailwind CSS
+- **Build Tool**: Webpack
+- **State Management**: React Context
+- **HTTP Client**: Axios
+
+### Real-time
+- **WebSocket**: Python WebSocket server
+- **Protocol**: WebSocket with JSON messaging
+- **Coordination**: Session-based presence tracking
+
 ## Project Structure
 
 ```
-mobile/app/
-├── app/
-│   ├── src/main/java/com/intelliattend/student/
-│   │   ├── ui/           # Compose UI screens
-│   │   ├── data/         # Repository and data sources
-│   │   ├── domain/       # Use cases and business logic
-│   │   ├── network/      # API services and models
-│   │   ├── utils/        # Utility classes
-│   │   └── auto/         # Auto-attendance features
-│   └── build.gradle      # App module configuration
-├── build.gradle          # Project configuration
-└── gradle.properties     # Gradle properties
+IntelliAttend/
+├── mobile/app/                 # Android Mobile Application
+│   ├── app/src/main/java/com/intelliattend/student/
+│   │   ├── ui/                # Jetpack Compose UI screens
+│   │   ├── data/              # Repository and data sources
+│   │   ├── domain/            # Use cases and business logic
+│   │   ├── network/           # API services and models
+│   │   ├── utils/             # Utility classes
+│   │   └── auto/              # Auto-attendance features
+│   └── build.gradle           # Android build configuration
+├── backend/                   # Python Flask API Server
+│   ├── api/                   # API route handlers
+│   ├── models/                # Database models
+│   ├── services/              # Business logic services
+│   ├── utils/                 # Utility functions
+│   ├── app.py                 # Main Flask application
+│   └── requirements.txt       # Python dependencies
+├── frontend/                  # React Web Dashboard
+│   ├── public/                # Static assets
+│   ├── templates/             # HTML templates
+│   │   ├── admin/             # Admin dashboard pages
+│   │   └── student/           # Student portal pages
+│   ├── package.json           # Node.js dependencies
+│   └── tailwind.config.js     # Tailwind CSS configuration
+├── database/                  # Database Schema & Scripts
+│   ├── database_schema.sql    # Complete database structure
+│   └── README.md              # Database documentation
+├── realtime_presence/         # Real-time Tracking Service
+│   ├── server.py              # WebSocket server
+│   ├── api.py                 # REST API endpoints
+│   └── demo.py                # Demo client
+├── backend_v2/                # Alternative Backend Implementation
+├── scripts/                   # Deployment & Utility Scripts
+├── docs/                      # Documentation
+└── README.md                  # This file
 ```
 
 ## Getting Started

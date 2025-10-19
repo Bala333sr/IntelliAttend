@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliAttend - Mobile App Configuration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .qr-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .qr-code {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .instructions {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .config-info {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .config-info p {
+            margin: 5px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 IntelliAttend Mobile Setup</h1>
+            <p class="subtitle">Scan QR Code to Configure Your Mobile App</p>
+        </div>
+        
+        <div class="qr-container">
+            <img src="/static/qr_config/mobile_config_1758948010.png" alt="Mobile App Configuration QR Code" class="qr-code">
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 Setup Instructions</h3>
+            <ol>
+                <li>Open the IntelliAttend mobile app</li>
+                <li>Navigate to Settings → Server Configuration</li>
+                <li>Select "Scan QR Code" option</li>
+                <li>Scan the QR code above</li>
+                <li>The app will automatically configure the server connection</li>
+                <li>Test the connection and save settings</li>
+            </ol>
+        </div>
+        
+        <div class="config-info">
+            <h3>🔧 Manual Configuration</h3>
+            <p><strong>Server URL:</strong> http://localhost:5002</p>
+            <p><strong>API Base:</strong> http://localhost:5002/api/</p>
+            <p><strong>Discovery Endpoint:</strong> http://localhost:5002/api/discover</p>
+        </div>
+        
+        <div class="footer">
+            <p>Generated: September 27, 2025</p>
+            <p>IntelliAttend Smart Attendance System</p>
+        </div>
+    </div>
+</body>
+</html>
