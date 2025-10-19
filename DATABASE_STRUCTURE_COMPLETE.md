@@ -4,7 +4,7 @@
 This document provides the complete MySQL database structure for the IntelliAttend smart attendance management system. The database is designed to handle multi-factor authentication, QR-based attendance tracking, geolocation verification, and comprehensive reporting.
 
 ## Database Configuration
-- **Database Name**: `IntelliAttend_DataBase`
+- **Database Name**: `intelliattend_db`
 - **Character Set**: `utf8mb4`
 - **Collation**: `utf8mb4_unicode_ci`
 - **Storage Engine**: InnoDB (for ACID compliance and foreign key support)
@@ -602,7 +602,7 @@ ORDER BY s.session_date DESC;
 ### 2. Backup Strategy
 ```sql
 -- Daily backup command
-mysqldump --single-transaction --routines --triggers IntelliAttend_DataBase > backup_$(date +%Y%m%d).sql
+mysqldump --single-transaction --routines --triggers intelliattend_db > backup_$(date +%Y%m%d).sql
 
 -- Point-in-time recovery setup
 -- Enable binary logging in my.cnf:
@@ -659,7 +659,7 @@ DATABASE_CONFIG = {
     'host': 'localhost',
     'user': 'intelliattend_user',
     'password': 'secure_password_here',
-    'database': 'IntelliAttend_DataBase',
+    'database': 'intelliattend_db',
     'charset': 'utf8mb4',
     'autocommit': False,
     'pool_size': 20,

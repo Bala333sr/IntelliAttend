@@ -18,7 +18,7 @@ import logging
 
 # Configure security logging
 security_logger = logging.getLogger('security')
-security_handler = logging.FileHandler('/var/log/intelliattend/security.log')
+security_handler = logging.FileHandler('./logs/security.log')
 security_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 security_handler.setFormatter(security_formatter)
 security_logger.addHandler(security_handler)

@@ -158,25 +158,21 @@ def create_sample_data():
         print("✅ Sample data created successfully")
 
 def create_admin_user():
-    """Create default admin user if it doesn't exist"""
+    """Create default admin user if it doesn't exist, aligned with Admin model"""
     with app.app_context():
         # Check if admin user already exists
         admin = Admin.query.filter_by(username='admin').first()
         if admin:
             print("⚠️  Admin user already exists")
             return
-        
-        # Create default admin user
+
+        # Create default admin user using fields present in Admin model
         admin = Admin(
             username='admin',
-            email='admin@intelliattend.com',
             password_hash=generate_password_hash('admin123'),
-            first_name='System',
-            last_name='Administrator',
-            role='super_admin',
-            is_active=True
+            role='superadmin'
         )
-        
+
         db.session.add(admin)
         db.session.commit()
         print("✅ Default admin user created successfully")
@@ -196,7 +192,6 @@ def main():
         print("Faculty: john.smith@university.edu / (DEFAULT_FACULTY_PASSWORD environment variable or 'faculty123' if not set)")
         print("Student: student1@student.edu / (DEFAULT_STUDENT_PASSWORD environment variable or 'student123' if not set)")
         print("SmartBoard Default OTP: 000000")
-        print("Admin Portal: http://localhost:5002/admin")
         print("Admin Username: admin")
         print("Admin Password: admin123")
     except Exception as e:

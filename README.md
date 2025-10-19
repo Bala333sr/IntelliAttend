@@ -13,11 +13,11 @@ The project is organized into separate components following professional softwar
 - [`/docs`](docs/) - Comprehensive documentation
 - [`/scripts`](scripts/) - Utility and setup scripts
 
-For detailed information about this structure, see [Project Structure Documentation](docs/PROJECT_STRUCTURE.md).
+For detailed information about this structure, see the [Documentation Index](docs/README.md).
 
 ## Recent Restructuring
 
-The project has been recently restructured to follow professional software development practices. See [Restructuring Summary](docs/RESTRUCTURING_SUMMARY.md) for details on the changes made.
+The project has been recently restructured to follow professional software development practices. See the [Documentation Index](docs/README.md) for summaries and change logs.
 
 ## System Components
 
@@ -62,12 +62,7 @@ The project has been recently restructured to follow professional software devel
 
 ## Documentation
 
-See the [`/docs`](docs/) directory for comprehensive documentation including:
-- [Technical specifications](docs/TECHNICAL_SPECIFICATION.md)
-- [User guides](docs/ADMIN_GUIDE.md)
-- [Implementation details](docs/)
-- [Running instructions](docs/RUNNING_INSTRUCTIONS.md)
-- [Restructuring summary](docs/RESTRUCTURING_SUMMARY.md)
+Browse all guides in the [Documentation Index](docs/README.md), which categorizes geofencing, real-time presence, mobile, database/hierarchy, production/testing, and integration documents.
 
 ## Scripts
 
@@ -182,8 +177,9 @@ IntelliAttend is a comprehensive smart attendance system that leverages QR codes
 **SmartBoard Default OTP**: `000000`
 
 **Admin Portal**:
-- Username: (Create admin user via database or admin interface)
-- Default admin password: (Set during initial setup)
+- **Unified Admin Dashboard**: `http://localhost:5002/admin/unified_dashboard.html`
+- Username: `admin@admin.edu`
+- Password: `admin123`
 
 ## 📊 API Endpoints
 
@@ -235,11 +231,7 @@ python test_app.py
 
 ## 📚 Documentation
 
-- [Final Fixes Summary](FINAL_FIXES_SUMMARY.md) - Detailed list of fixes and improvements
-- [Project Completion Notice](PROJECT_COMPLETION_NOTICE.md) - Project status and achievements
-- [API Documentation](docs/api.md) - Complete API reference
-- [Admin Manual](docs/admin_manual.md) - Administrator guide
-- [User Guides](docs/user_guides/) - Faculty and student user guides
+See the [Documentation Index](docs/README.md) for all manuals, summaries, and guides.
 
 ## 🤝 Contributing
 

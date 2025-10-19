@@ -18,7 +18,7 @@ DB_CONFIG = {
     'charset': 'utf8mb4'
 }
 
-DATABASE_NAME = 'IntelliAttend_DataBase'
+DATABASE_NAME = 'intelliattend_db'
 
 def create_database():
     """Create the database if it doesn't exist"""
