@@ -110,29 +110,53 @@ IntelliAttend/
 └── README.md                  # This file
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
+### ⚡ Quick Start (Recommended)
 
-- Android Studio Hedgehog or later
-- JDK 17
-- Android SDK 34
-- Gradle 8.12+
+```bash
+# 1. Download the ZIP file from GitHub
+# 2. Extract and navigate to the folder
+# 3. Run the automated setup:
 
-### Setup
+chmod +x setup.sh
+./setup.sh
 
-1. Clone the repository
-2. Open in Android Studio
-3. Sync project with Gradle files
-4. Configure `local.properties` with your SDK path
-5. Build and run on device/emulator
+# 4. Start all services:
+./start-all.sh
+```
 
-### Configuration
+**That's it!** 🎉 Your system will be running at:
+- **Web Dashboard**: http://localhost:3000
+- **API Server**: http://localhost:8080
+- **Mobile App**: Build with Android Studio
 
-Update the base URL in `app/build.gradle`:
+### 📚 Detailed Guides
 
-```gradle
-buildConfigField "String", "BASE_URL", '"http://your-server:8080/api/"'
+- **🚀 [Quick Start Guide](QUICKSTART.md)** - Get running in 5 minutes
+- **🔧 [Complete Setup Guide](SETUP.md)** - Detailed installation instructions
+- **🌐 [Deployment Guide](DEPLOYMENT.md)** - Production deployment options
+
+### 📋 Prerequisites
+
+- **Python 3.8+** - Backend API server
+- **Node.js 16+** - Frontend web application
+- **Java 17** - Mobile app development (optional)
+- **Android Studio** - Mobile app development (optional)
+
+### 🎯 Quick Test
+
+After setup, test your installation:
+
+```bash
+# Test backend API
+curl http://localhost:8080/health
+
+# Test frontend (open in browser)
+open http://localhost:3000
+
+# Build mobile app
+cd mobile/app && ./gradlew assembleDebug
 ```
 
 ## Build

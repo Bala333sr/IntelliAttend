@@ -1,0 +1,23 @@
+# IntelliAttend Mobile App Configuration
+# Copy this file to local.properties and update the values
+
+# Android SDK location
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+
+# Server Configuration
+# Update this with your actual server IP address
+intelliattend.server.url=http://192.168.1.100:8080/api/
+
+# Debug Configuration
+intelliattend.debug.enabled=true
+
+# Build Configuration
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+android.useAndroidX=true
+kotlin.code.style=official
+
+# Signing Configuration (for release builds)
+# STORE_FILE=path/to/your/keystore.jks
+# STORE_PASSWORD=your_store_password
+# KEY_ALIAS=your_key_alias
+# KEY_PASSWORD=your_key_password
