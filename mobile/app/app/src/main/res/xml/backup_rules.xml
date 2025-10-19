@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<backup-rules>
+    <!-- Exclude sensitive data from backups -->
+    <exclude domain="sharedpref" path="intelliattend_secure_prefs"/>
+    <exclude domain="database" />
+    <exclude domain="file" path="qr_cache"/>
+</backup-rules>
